@@ -1,0 +1,71 @@
+version: '3.9'
+
+services:
+ 
+  AirFreight:
+    restart: always
+    image: airfreight
+    build: ./AirFreight
+    ports:
+      - '61:6000'
+    volumes:
+      #  - ./zipa-backend:/src/
+       - nodemodules:/src/node_modules
+
+     
+  OceanFreight:
+    restart: always
+    image: oceanfreight
+    build: ./OceanFreight
+    ports:
+      - '62:6000'
+    volumes:
+      #  - ./zipa-backend:/src/
+       - nodemodules:/src/node_modules
+
+
+  # Courier:
+    # restart: always
+    # image: courier
+    # build: ./Courier
+    # ports:
+    #   - '63:6000'
+    # volumes:
+    #   #  - ./zipa-backend:/src/
+    #    - nodemodules:/src/node_modules
+
+  Auth:
+    restart: always
+    image: auth
+    build: ./authentication
+    ports:
+      - '64:6000'
+    volumes:
+      #  - ./zipa-backend:/src/
+       - nodemodules:/src/node_modules
+ 
+
+  nginx:
+    build: ./Nginx
+    ports:
+    - '90:90'
+    links:
+        - AirFreight
+        - OceanFreight
+        - Auth
+        # - Courier
+    volumes:
+      #  - ./zipa-backend:/src/
+       - nodemodules:/src/node_modules
+
+
+
+    depends_on:
+    - AirFreight
+    - OceanFreight
+    - Auth
+    # - Courier
+
+
+volumes:
+    nodemodules: {}
